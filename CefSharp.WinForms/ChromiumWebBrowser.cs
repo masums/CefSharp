@@ -230,11 +230,6 @@ namespace CefSharp.WinForms
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), DefaultValue(null)]
         public IFindHandler FindHandler { get; set; }
         /// <summary>
-        /// Implement <see cref="IAudioHandler" /> to handle audio events.
-        /// </summary>
-        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), DefaultValue(null)]
-        public IAudioHandler AudioHandler { get; set; }
-        /// <summary>
         /// The <see cref="IFocusHandler" /> for this ChromiumWebBrowser.
         /// </summary>
         /// <value>The focus handler.</value>
@@ -459,7 +454,13 @@ namespace CefSharp.WinForms
 
                 if (FocusHandler == null)
                 {
-                    FocusHandler = new DefaultFocusHandler();
+                    //If the WinForms UI thread and the CEF UI thread are one in the same
+                    //then we don't need the FocusHandler, it's only required when using
+                    //MultiThreadedMessageLoop (the default)
+                    if (!Cef.CurrentlyOnThread(CefThreadIds.TID_UI))
+                    {
+                        FocusHandler = new DefaultFocusHandler();
+                    }
                 }
 
                 if (browserSettings == null)

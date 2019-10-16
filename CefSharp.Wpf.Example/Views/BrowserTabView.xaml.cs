@@ -90,14 +90,15 @@ namespace CefSharp.Wpf.Example.Views
             };
 
             browser.DisplayHandler = new DisplayHandler();
-            browser.LifeSpanHandler = new LifespanHandler();
+            //This LifeSpanHandler implementaion demos hosting a popup in a ChromiumWebBrowser
+            //instance, it's still considered Experimental
+            //browser.LifeSpanHandler = new ExperimentalLifespanHandler();
             browser.MenuHandler = new MenuHandler();
             browser.AccessibilityHandler = new AccessibilityHandler();
             var downloadHandler = new DownloadHandler();
             downloadHandler.OnBeforeDownloadFired += OnBeforeDownloadFired;
             downloadHandler.OnDownloadUpdatedFired += OnDownloadUpdatedFired;
             browser.DownloadHandler = downloadHandler;
-            browser.AudioHandler = new AudioHandler();
 
             //Read an embedded bitmap into a memory stream then register it as a resource you can then load custom://cefsharp/images/beach.jpg
             var beachImageStream = new MemoryStream();
@@ -146,7 +147,7 @@ namespace CefSharp.Wpf.Example.Views
                 var errorBody = string.Format("<html><body bgcolor=\"white\"><h2>Failed to load URL {0} with error {1} ({2}).</h2></body></html>",
                                               args.FailedUrl, args.ErrorText, args.ErrorCode);
 
-                args.Frame.LoadHtml(errorBody, base64Encode: true);
+                args.Frame.LoadHtml(errorBody, base64Encode:true);
             };
 
             CefExample.RegisterTestResources(browser);
